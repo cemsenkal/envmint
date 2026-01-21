@@ -1,0 +1,23 @@
+:root {
+    --app-container-width: 1000px;
+
+    /*Light theme*/
+    &[data-app-theme="light"] {
+        --app-bg-color: #d3d1d1;
+        --app-text-color: #353535;
+    }
+
+    /*Dark theme*/
+    &[data-app-theme="dark"] {
+        --app-bg-color: #151515;
+        --app-text-color: #d0d0d0;
+    }
+}
+
+body {
+    background-color: var(--app-bg-color);
+    color: var(--app-text-color);
+    max-width: var(--app-container-width);
+    width: 100%;
+    margin: 0 auto;
+}
