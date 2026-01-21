@@ -1,5 +1,8 @@
 <script lang="ts">
-    import { themeState, toggleTheme } from "../../lib/theme/index.svelte";
+    import {
+        themeState,
+        toggleTheme,
+    } from "../../lib/stores/theme/index.svelte";
     import type { ThemeType } from "../../types";
 
     let theme: ThemeType;
