@@ -1,1 +1,5 @@
-<h1>EnvMint</h1>
+<script lang="ts">
+    import Header from "../../components/header/index.svelte"
+</script>
+
+<Header />

@@ -21,3 +21,14 @@ body {
     width: 100%;
     margin: 0 auto;
 }
+
+a {
+    color: var(--app-text-color);
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    color: var(--app-text-color);
+    padding: 0;
+}
