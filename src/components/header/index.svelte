@@ -1,3 +1,14 @@
+<script lang="ts">
+    import { themeState, toggleTheme } from "../../lib/theme/index.svelte";
+    import type { ThemeType } from "../../types";
+
+    let theme: ThemeType;
+
+    themeState.subscribe((data) => {
+        theme = data;
+    });
+</script>
+
 <header>
     <h1>EnvMint</h1>
 
@@ -5,10 +16,16 @@
         <a
             href="https://github.com/cemsenkal/envmint"
             target="_blank"
-            aria-label="project repo"><span class="ph--github-logo"></span></a
+            aria-label="project repo"
         >
-        <button aria-label="toggle theme">
-            <span class="ph--sun"></span>
+            <span class="ph--github-logo"></span>
+        </a>
+        <button aria-label="toggle theme" onclick={toggleTheme}>
+            {#if theme === "dark"}
+                <span class="ph--sun"></span>
+            {:else}
+                <span class="ph--moon-stars"></span>
+            {/if}
         </button>
     </div>
 </header>
