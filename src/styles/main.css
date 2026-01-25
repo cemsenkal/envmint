@@ -12,6 +12,10 @@
         --editor-line-number-bg: #9b9b9b;
         --editor-input-bg: #9b9b9b;
         --editor-key-input-text-color: darkslategrey;
+
+        /*Base button*/
+        --base-button-bg: #151515;
+        --base-button-text: #d0d0d0;
     }
 
     /*Dark theme*/
@@ -25,6 +29,10 @@
         --editor-line-number-bg: #222;
         --editor-input-bg: #222;
         --editor-key-input-text-color: darkkhaki;
+        
+        /*Base button*/
+        --base-button-bg: #d3d1d1;
+        --base-button-text: #353535;
     }
 }
 

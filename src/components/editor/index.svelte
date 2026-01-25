@@ -2,6 +2,7 @@
     import { onDestroy, tick } from "svelte";
     import { editorStore } from "../../lib/stores/editor/index.svelte";
     import type { LineDataType } from "../../types";
+    import EditorHeader from "../editor-header/index.svelte"
 
     const isFirefox = navigator.userAgent.includes("Firefox");
 
@@ -126,7 +127,7 @@
 </script>
 
 <section>
-    <div class="editor-header"></div>
+    <EditorHeader />
 
     <div class="editor">
         <ul bind:this={lineContainer}>
@@ -177,16 +178,6 @@
 </pre>
 
 <style>
-    .editor-header {
-        width: 100%;
-        height: 2.5rem;
-        background-color: var(--editor-bg);
-        border: 1px solid var(--editor-border);
-        border-bottom: none;
-        border-top-left-radius: 0.8rem;
-        border-top-right-radius: 0.8rem;
-    }
-
     .editor {
         width: 100%;
         height: 30rem;
