@@ -1,4 +1,4 @@
-import type { ThemeType } from "../../types";
+import type { ThemeType } from "../../../types";
 import { writable } from "svelte/store";
 
 export const themeState = writable<ThemeType>(null);

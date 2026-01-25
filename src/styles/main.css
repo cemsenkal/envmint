@@ -5,12 +5,26 @@
     &[data-app-theme="light"] {
         --app-bg-color: #d3d1d1;
         --app-text-color: #353535;
+
+        /*Editor*/
+        --editor-bg: #b5b5b5;
+        --editor-border: #a6a6a6;
+        --editor-line-number-bg: #9b9b9b;
+        --editor-input-bg: #9b9b9b;
+        --editor-key-input-text-color: darkslategrey;
     }
 
     /*Dark theme*/
     &[data-app-theme="dark"] {
         --app-bg-color: #151515;
         --app-text-color: #d0d0d0;
+
+        /*Editor*/
+        --editor-bg: #2b2b2b;
+        --editor-border: #3c3c3c;
+        --editor-line-number-bg: #222;
+        --editor-input-bg: #222;
+        --editor-key-input-text-color: darkkhaki;
     }
 }
 
@@ -31,4 +45,13 @@ button {
     border: none;
     color: var(--app-text-color);
     padding: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
 }

@@ -13,7 +13,7 @@
 </script>
 
 <header>
-    <h1>EnvMint</h1>
+    <h1 translate="no">EnvMint</h1>
 
     <div>
         <a
