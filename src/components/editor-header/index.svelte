@@ -1,5 +1,14 @@
 <script lang="ts">
+    import { onDestroy } from "svelte";
+    import { editorStore } from "../../lib/stores/editor/index.svelte";
+    import type { EditorStoreType } from "../../types";
+    import JSZip from "jszip";
+
     let isCopied = $state(false);
+    let editorData: Array<EditorStoreType>;
+
+    const unsubscribe = editorStore.subscribe((data) => (editorData = data));
+    onDestroy(unsubscribe);
 
     $effect(() => {
         if (!isCopied) return;
@@ -12,10 +21,68 @@
             clearTimeout(timeout);
         };
     });
+
+    const resetEditor = () => {
+        if (editorData[0].key.length <= 0 && editorData[0].value.length <= 0)
+            return;
+        editorStore.update(() => {
+            return [
+                {
+                    id: self.crypto.randomUUID(),
+                    key: "",
+                    value: "",
+                },
+            ];
+        });
+    };
+
+    const copySecret = async () => {
+        const bytes = new Uint8Array(32);
+        crypto.getRandomValues(bytes);
+
+        const hex = [...bytes]
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+
+        const clipboardItem = new ClipboardItem({
+            ["text/plain"]: hex,
+        });
+        await navigator.clipboard.write([clipboardItem]);
+        isCopied = true;
+    };
+
+    const downloadEnv = async () => {
+        if (editorData[0].key.length < 3 || editorData[0].value.length < 3)
+            return;
+
+        const secretList = editorData.map(
+            ({ key, value }) => `${key}=${value}`,
+        );
+        const exampleList = editorData.map(({ key }) => `${key}=`);
+
+        const zip = new JSZip();
+        zip.file(".env", secretList.join("\n"));
+        zip.file(".env.example", exampleList.join("\n"));
+        zip.file(".env.production", secretList.join("\n"));
+        const zipFile = await zip.generateAsync({ type: "blob" });
+        const url = URL.createObjectURL(zipFile);
+
+        const temporaryTag = document.createElement("a");
+        temporaryTag.href = url;
+        temporaryTag.download = "env-files.zip";
+        document.body.appendChild(temporaryTag);
+        temporaryTag.click();
+
+        document.body.removeChild(temporaryTag);
+        URL.revokeObjectURL(url);
+    };
 </script>
 
 <div class="editor-header">
-    <button class="refresh-button" aria-label="reset editor"
+    <button
+        class="refresh-button"
+        aria-label="reset editor"
+        onclick={resetEditor}
         ><span
             class="ph--arrow-counter-clockwise"
             style="width: 100%; height: 100%;"
@@ -23,8 +90,10 @@
     >
 
     <div>
-        <button>{isCopied ? "Copied!" : "Copy secret"}</button>
-        <button>Download</button>
+        <button onclick={copySecret}
+            >{isCopied ? "Copied!" : "Copy secret"}</button
+        >
+        <button onclick={downloadEnv}>Download</button>
     </div>
 </div>
 
