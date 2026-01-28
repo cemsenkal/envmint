@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
-import type { LineDataType } from "../../../types";
+import type { EditorStoreType } from "../../../types";
 
-export const editorStore = writable<LineDataType[]>([
+export const editorStore = writable<EditorStoreType[]>([
   {
     id: self.crypto.randomUUID(),
     key: "",

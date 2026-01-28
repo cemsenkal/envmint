@@ -1,12 +1,12 @@
 <script lang="ts">
     import { onDestroy, tick } from "svelte";
     import { editorStore } from "../../lib/stores/editor/index.svelte";
-    import type { LineDataType } from "../../types";
-    import EditorHeader from "../editor-header/index.svelte"
+    import type { EditorStoreType } from "../../types";
+    import EditorHeader from "../editor-header/index.svelte";
 
     const isFirefox = navigator.userAgent.includes("Firefox");
 
-    let editorData: Array<LineDataType>;
+    let editorData: Array<EditorStoreType>;
     const unsubscribe = editorStore.subscribe((data) => (editorData = data));
     onDestroy(unsubscribe);
 
@@ -14,7 +14,7 @@
     let activeLine: HTMLLIElement;
     let activeLineId: number;
 
-    const selectActiveLine = (event: FocusEvent, lineData: LineDataType) => {
+    const selectActiveLine = (event: FocusEvent, lineData: EditorStoreType) => {
         const focusedInput = event.target as HTMLInputElement;
         activeLine = focusedInput.closest("li") as HTMLLIElement;
         activeLineId = editorData.findIndex((data) => data.id === lineData.id);

@@ -29,7 +29,7 @@
         --editor-line-number-bg: #222;
         --editor-input-bg: #222;
         --editor-key-input-text-color: darkkhaki;
-        
+
         /*Base button*/
         --base-button-bg: #d3d1d1;
         --base-button-text: #353535;
@@ -62,4 +62,8 @@ ul {
 
 li {
     list-style: none;
+}
+
+a {
+    text-decoration: none;
 }

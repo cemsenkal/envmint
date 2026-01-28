@@ -3,7 +3,7 @@ import type { HTMLButtonAttributes } from "svelte/elements";
 
 export type ThemeType = "dark" | "light" | null;
 
-export interface LineDataType {
+export interface EditorStoreType {
   id: `${string}-${string}-${string}-${string}-${string}`;
   key: string;
   value: string;
