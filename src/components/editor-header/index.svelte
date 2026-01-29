@@ -101,8 +101,8 @@
     .editor-header {
         width: 100%;
         height: 2.5rem;
-        background-color: var(--editor-bg);
-        border: 1px solid var(--editor-border);
+        background-color: var(--surface-panel);
+        border: 1px solid var(--border-primary);
         border-bottom: none;
         border-top-left-radius: 0.8rem;
         border-top-right-radius: 0.8rem;

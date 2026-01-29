@@ -35,8 +35,8 @@
         gap: 1rem;
 
         div {
-            background-color: var(--editor-bg);
-            border: 1px solid var(--editor-border);
+            background-color: var(--surface-panel);
+            border: 1px solid var(--border-primary);
             margin-top: 1rem;
             width: 100%;
             border-radius: 0.8rem;

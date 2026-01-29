@@ -177,10 +177,10 @@
     .editor {
         width: 100%;
         height: 30rem;
-        background-color: var(--editor-bg);
+        background-color: var(--surface-panel);
         border-bottom-left-radius: 0.8rem;
         border-bottom-right-radius: 0.8rem;
-        border: 1px solid var(--editor-border);
+        border: 1px solid var(--border-primary);
 
         &:before {
             content: " ";
@@ -221,7 +221,7 @@
                     input {
                         outline: none;
                         border: none;
-                        color: var(--app-text-color);
+                        color: var(--text-primary);
                         font-weight: 500;
                         background-color: var(--editor-input-bg);
                         padding: 0.4rem;
@@ -249,12 +249,12 @@
     [data-input-type="key"] {
         min-width: 4rem;
         max-width: 27.7rem;
-        color: var(--editor-key-input-text-color) !important;
+        color: var(--editor-key-input-text) !important;
     }
 
     [data-input-type="value"] {
         min-width: 6rem;
         max-width: 27.7rem;
-        color: var(--editor-value-input-text-color) !important;
+        color: var(--editor-value-input-text) !important;
     }
 </style>

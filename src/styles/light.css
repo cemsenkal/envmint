@@ -1,0 +1,19 @@
+:root {
+    &[data-app-theme="light"] {
+        /*Base*/
+        --surface-bg: #ececed;
+        --text-primary: #5c6172;
+        --surface-panel: #fcfcfc;
+        --border-primary: #cfd1d2;
+
+        /*Editor*/
+        --editor-line-number-bg: var(--surface-bg);
+        --editor-input-bg: var(--surface-bg);
+        --editor-key-input-text: #5c6166;
+        --editor-value-input-text: #7b8346;
+
+        /*Base button*/
+        --base-button-bg: #151515;
+        --base-button-text: #d0d0d0;
+    }
+}

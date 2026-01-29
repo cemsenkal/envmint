@@ -1,59 +1,23 @@
 :root {
     --app-container: 1000px;
-
-    /*Light theme*/
-    &[data-app-theme="light"] {
-        --app-bg-color: #ececed;
-        --app-text-color: #5c6172;
-
-        /*Editor*/
-        --editor-bg: #fcfcfc;
-        --editor-border: #cfd1d2;
-        --editor-line-number-bg: #ececed;
-        --editor-input-bg: #ececed;
-        --editor-key-input-text-color: #5c6166;
-        --editor-value-input-text-color: #7b8346;
-
-        /*Base button*/
-        --base-button-bg: #151515;
-        --base-button-text: #d0d0d0;
-    }
-
-    /*Dark theme*/
-    &[data-app-theme="dark"] {
-        --app-bg-color: #1e2227;
-        --app-text-color: #a9aaab;
-
-        /*Editor*/
-        --editor-bg: #23272e;
-        --editor-border: #3e4452;
-        --editor-line-number-bg: #1e2227;
-        --editor-input-bg: #1e2227;
-        --editor-key-input-text-color: #9f352e;
-        --editor-value-input-text-color: #7b8346;
-
-        /*Base button*/
-        --base-button-bg: #d3d1d1;
-        --base-button-text: #353535;
-    }
 }
 
 body {
-    background-color: var(--app-bg-color);
-    color: var(--app-text-color);
+    background-color: var(--surface-bg);
+    color: var(--text-primary);
     max-width: var(--app-container);
     width: 100%;
     margin: 0 auto;
 }
 
 a {
-    color: var(--app-text-color);
+    color: var(--text-primary);
 }
 
 button {
     background-color: transparent;
     border: none;
-    color: var(--app-text-color);
+    color: var(--text-primary);
     padding: 0;
 }
 
@@ -68,4 +32,12 @@ li {
 
 a {
     text-decoration: none;
+}
+
+h3 {
+    margin: 0;
+}
+
+p {
+    margin: 0;
 }
