@@ -173,10 +173,6 @@
     </div>
 </section>
 
-<pre>
-    {JSON.stringify(editorData, null, 2)}
-</pre>
-
 <style>
     .editor {
         width: 100%;
