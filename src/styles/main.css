@@ -1,17 +1,18 @@
 :root {
-    --app-container-width: 1000px;
+    --app-container: 1000px;
 
     /*Light theme*/
     &[data-app-theme="light"] {
-        --app-bg-color: #d3d1d1;
-        --app-text-color: #353535;
+        --app-bg-color: #ececed;
+        --app-text-color: #5c6172;
 
         /*Editor*/
-        --editor-bg: #b5b5b5;
-        --editor-border: #a6a6a6;
-        --editor-line-number-bg: #9b9b9b;
-        --editor-input-bg: #9b9b9b;
-        --editor-key-input-text-color: darkslategrey;
+        --editor-bg: #fcfcfc;
+        --editor-border: #cfd1d2;
+        --editor-line-number-bg: #ececed;
+        --editor-input-bg: #ececed;
+        --editor-key-input-text-color: #5c6166;
+        --editor-value-input-text-color: #7b8346;
 
         /*Base button*/
         --base-button-bg: #151515;
@@ -20,15 +21,16 @@
 
     /*Dark theme*/
     &[data-app-theme="dark"] {
-        --app-bg-color: #151515;
-        --app-text-color: #d0d0d0;
+        --app-bg-color: #1e2227;
+        --app-text-color: #a9aaab;
 
         /*Editor*/
-        --editor-bg: #2b2b2b;
-        --editor-border: #3c3c3c;
-        --editor-line-number-bg: #222;
-        --editor-input-bg: #222;
-        --editor-key-input-text-color: darkkhaki;
+        --editor-bg: #23272e;
+        --editor-border: #3e4452;
+        --editor-line-number-bg: #1e2227;
+        --editor-input-bg: #1e2227;
+        --editor-key-input-text-color: #9f352e;
+        --editor-value-input-text-color: #7b8346;
 
         /*Base button*/
         --base-button-bg: #d3d1d1;
@@ -39,7 +41,7 @@
 body {
     background-color: var(--app-bg-color);
     color: var(--app-text-color);
-    max-width: var(--app-container-width);
+    max-width: var(--app-container);
     width: 100%;
     margin: 0 auto;
 }

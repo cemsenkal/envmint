@@ -255,5 +255,6 @@
     [data-input-type="value"] {
         min-width: 6rem;
         max-width: 27.7rem;
+        color: var(--editor-value-input-text-color) !important;
     }
 </style>
