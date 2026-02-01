@@ -1,15 +1,17 @@
 <script lang="ts">
+    import { onDestroy } from "svelte";
     import {
-        themeState,
+        themeStore,
         toggleTheme,
     } from "../../lib/stores/theme/index.svelte";
     import type { ThemeType } from "../../types";
 
     let theme: ThemeType;
 
-    themeState.subscribe((data) => {
+    const unsubscribe = themeStore.subscribe((data) => {
         theme = data;
     });
+    onDestroy(unsubscribe);
 </script>
 
 <header>
