@@ -5,8 +5,7 @@
     import JSZip from "jszip";
 
     let isCopied = $state(false);
-    let editorData: Array<EditorStoreType>;
-
+    let editorData: EditorStoreType;
     const unsubscribe = editorStore.subscribe((data) => (editorData = data));
     onDestroy(unsubscribe);
 
@@ -23,11 +22,12 @@
     });
 
     const resetEditor = () => {
-        if (editorData[0].key.length <= 0 && editorData[0].value.length <= 0)
-            return;
+        if (editorData.length <= 1) return;
+
         editorStore.update(() => {
             return [
                 {
+                    type: "line",
                     id: self.crypto.randomUUID(),
                     key: "",
                     value: "",
@@ -52,13 +52,37 @@
     };
 
     const downloadEnv = async () => {
-        if (editorData[0].key.length < 3 || editorData[0].value.length < 3)
-            return;
+        if (editorData.length <= 1) return;
 
-        const secretList = editorData.map(
-            ({ key, value }) => `${key}=${value}`,
-        );
-        const exampleList = editorData.map(({ key }) => `${key}=`);
+        const isDownloadable =
+            editorData.filter((data) => {
+                if (data.type === "comment") {
+                    if (data.value.length <= 3) return data;
+                } else {
+                    if (data.key.length <= 3 || data.value.length <= 3)
+                        return data;
+                }
+            }).length !== 0
+                ? true
+                : false;
+
+        if (isDownloadable) return;
+
+        const secretList = editorData.map((data) => {
+            if (data.type === "line") {
+                return `${data.key}=${data.value}`;
+            } else {
+                return `\n# ${data.value}`;
+            }
+        });
+
+        const exampleList = editorData.map((data) => {
+            if (data.type === "line") {
+                return `${data.key}=YOUR_DATA`;
+            } else {
+                return `\n# ${data.value}`;
+            }
+        });
 
         const zip = new JSZip();
         zip.file(".env", secretList.join("\n"));

@@ -1,23 +1,42 @@
 <script lang="ts">
+    import "../../styles/editor.css";
     import { onDestroy, tick } from "svelte";
     import { editorStore } from "../../lib/stores/editor/index.svelte";
-    import type { EditorStoreType } from "../../types";
+    import type {
+        EditorCommentType,
+        EditorLineType,
+        EditorStoreType,
+    } from "../../types";
     import EditorHeader from "../editor-header/index.svelte";
 
-    const isFirefox = navigator.userAgent.includes("Firefox");
+    const minKeyLength = 3;
+    const maxLines = 50;
 
-    let editorData: Array<EditorStoreType>;
+    let editorData: EditorStoreType;
     const unsubscribe = editorStore.subscribe((data) => (editorData = data));
     onDestroy(unsubscribe);
 
     let lineContainer: HTMLUListElement;
     let activeLine: HTMLLIElement;
+    let activeLineType: "comment" | "line";
     let activeLineId: number;
 
-    const selectActiveLine = (event: FocusEvent, lineData: EditorStoreType) => {
+    const selectActiveLine = (
+        event: FocusEvent,
+        lineData: EditorLineType | EditorCommentType,
+    ) => {
         const focusedInput = event.target as HTMLInputElement;
         activeLine = focusedInput.closest("li") as HTMLLIElement;
         activeLineId = editorData.findIndex((data) => data.id === lineData.id);
+        activeLineType = editorData[activeLineId].type;
+    };
+
+    const isFirefox = navigator.userAgent.includes("Firefox");
+    const autoWidth = (len: number) => {
+        const style = isFirefox
+            ? `font-family: mono; width: ${len < 56 ? `${len + 1.5}ch` : "100%"};`
+            : "field-sizing: content;";
+        return style;
     };
 
     const functionRouter = (event: KeyboardEvent) => {
@@ -28,10 +47,23 @@
         const valueInput = activeLine.querySelector(
             "[data-input-type='value']",
         ) as HTMLInputElement;
+        const commentInput = activeLine.querySelector(
+            "[data-input-type='comment']",
+        ) as HTMLInputElement;
 
-        changeFocus(event, keyInput, valueInput, activeInput);
-        createNewLine(event, keyInput, valueInput);
-        removeLine(event, keyInput);
+        switch (event.key) {
+            case "Enter":
+                changeFocus(event, keyInput, valueInput, activeInput);
+                createNewLine(keyInput, valueInput, commentInput);
+                break;
+            case "Backspace":
+                changeFocus(event, keyInput, valueInput, activeInput);
+                removeLine(event, keyInput, activeInput);
+                break;
+            case "/":
+                if (event.ctrlKey) changeLineType();
+                break;
+        }
     };
 
     const changeFocus = (
@@ -40,12 +72,14 @@
         valueInput: HTMLInputElement,
         activeInput: HTMLInputElement,
     ) => {
-        if (keyInput.value.length > 3 && event.key === "Enter") {
+        if (!keyInput && !valueInput) return;
+
+        if (keyInput.value.length > minKeyLength && event.key === "Enter") {
             valueInput.focus();
         } else if (
             valueInput.value.length <= 0 &&
-            event.key === "Backspace" &&
-            activeInput === valueInput
+            activeInput === valueInput &&
+            event.key === "Backspace"
         ) {
             event.preventDefault();
             keyInput.focus();
@@ -53,15 +87,16 @@
     };
 
     const createNewLine = async (
-        event: KeyboardEvent,
         keyInput: HTMLInputElement,
         valueInput: HTMLInputElement,
+        commentInput: HTMLInputElement,
     ) => {
         if (
-            keyInput.value.length > 3 &&
-            valueInput.value.length > 3 &&
-            event.key === "Enter" &&
-            editorData.length < 50
+            editorData.length < maxLines &&
+            (activeLineType === "line"
+                ? keyInput.value.length > minKeyLength &&
+                  valueInput.value.length > minKeyLength
+                : commentInput.value.length > minKeyLength)
         ) {
             activeLineId += 1;
 
@@ -69,6 +104,7 @@
                 return [
                     ...data.slice(0, activeLineId),
                     {
+                        type: "line",
                         id: self.crypto.randomUUID(),
                         key: "",
                         value: "",
@@ -92,12 +128,11 @@
     const removeLine = async (
         event: KeyboardEvent,
         keyInput: HTMLInputElement,
+        activeInput: HTMLInputElement,
     ) => {
-        if (
-            keyInput.value.length <= 0 &&
-            event.key === "Backspace" &&
-            editorData.length > 1
-        ) {
+        if (editorData.length > 1 && activeInput.value.length < 1) {
+            if (keyInput && keyInput.value.length > 1) return;
+
             editorStore.update((data) => {
                 return [
                     ...data.slice(0, activeLineId),
@@ -119,10 +154,44 @@
                 activeLineId
             ] as HTMLLIElement;
             const newValueInput = activeLine.querySelector(
-                "[data-input-type='value']",
+                `[data-input-type='${editorData[activeLineId].type === "comment" ? "comment" : "value"}']`,
             ) as HTMLInputElement;
+
             newValueInput.focus();
         }
+    };
+
+    const changeLineType = async () => {
+        const updatedLine: EditorLineType | EditorCommentType =
+            editorData[activeLineId].type === "comment"
+                ? {
+                      type: "line",
+                      id: editorData[activeLineId].id,
+                      key: "",
+                      value: "",
+                  }
+                : {
+                      type: "comment",
+                      id: editorData[activeLineId].id,
+                      value: "",
+                  };
+        editorStore.update((data) => {
+            return [
+                ...data.slice(0, activeLineId),
+                updatedLine,
+                ...data.slice(activeLineId + 1),
+            ];
+        });
+
+        await tick();
+
+        const activeLine = lineContainer.children[
+            activeLineId
+        ] as HTMLLIElement;
+        const selectedInput = activeLine.querySelector(
+            `[data-input-type='${updatedLine.type === "comment" ? "comment" : "key"}']`,
+        ) as HTMLInputElement;
+        selectedInput.focus();
     };
 </script>
 
@@ -132,129 +201,62 @@
     <div class="editor">
         <ul bind:this={lineContainer}>
             {#each editorData as lineData, index (lineData.id)}
-                <li>
-                    <span class="line-number">{index + 1}</span>
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="KEY"
-                            data-input-type="key"
-                            style={isFirefox
-                                ? `font-family: mono; width: ${lineData.key.length < 56 ? `${lineData.key.length + 1.5}ch` : "100%"};`
-                                : "field-sizing: content;"}
-                            onfocus={(event) =>
-                                selectActiveLine(event, lineData)}
-                            onkeydown={functionRouter}
-                            oninput={(event) => {
-                                const input = event.target as HTMLInputElement;
-                                input.value = input.value.replace(" ", "_");
-                                input.value = input.value.toUpperCase();
+                {#if lineData.type === "line"}
+                    <li>
+                        <span class="line-number">{index + 1}</span>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="KEY"
+                                data-input-type="key"
+                                style={`${autoWidth(lineData.key.length)}`}
+                                onfocus={(event) =>
+                                    selectActiveLine(event, lineData)}
+                                onkeydown={functionRouter}
+                                oninput={(event) => {
+                                    const input =
+                                        event.target as HTMLInputElement;
+                                    input.value = input.value.replace(" ", "_");
+                                    input.value = input.value.toUpperCase();
 
-                                lineData.key = input.value;
-                            }}
-                        />
-                        <span>=</span>
-                        <input
-                            type="text"
-                            placeholder="VALUE"
-                            bind:value={lineData.value}
-                            data-input-type="value"
-                            style={isFirefox
-                                ? `font-family: mono; width: ${lineData.value.length < 56 ? `${lineData.value.length + 1.5}ch` : "100%"};`
-                                : "field-sizing: content;"}
-                            onfocus={(event) =>
-                                selectActiveLine(event, lineData)}
-                            onkeydown={functionRouter}
-                        />
-                    </div>
-                </li>
+                                    lineData.key = input.value;
+                                }}
+                                maxlength={200}
+                            />
+                            <span>=</span>
+                            <input
+                                type="text"
+                                placeholder="VALUE"
+                                bind:value={lineData.value}
+                                data-input-type="value"
+                                style={`${autoWidth(lineData.value.length)}`}
+                                onfocus={(event) =>
+                                    selectActiveLine(event, lineData)}
+                                onkeydown={functionRouter}
+                                maxlength={200}
+                            />
+                        </div>
+                    </li>
+                {:else}
+                    <li>
+                        <span class="line-number">{index + 1}</span>
+                        <div>
+                            <span>#</span>
+                            <input
+                                type="text"
+                                placeholder="Comment here"
+                                bind:value={lineData.value}
+                                data-input-type="comment"
+                                style={`${autoWidth(lineData.value.length)}`}
+                                onfocus={(event) =>
+                                    selectActiveLine(event, lineData)}
+                                onkeydown={functionRouter}
+                                maxlength={200}
+                            />
+                        </div>
+                    </li>
+                {/if}
             {/each}
         </ul>
     </div>
 </section>
-
-<style>
-    .editor {
-        width: 100%;
-        height: 30rem;
-        background-color: var(--surface-panel);
-        border-bottom-left-radius: 0.8rem;
-        border-bottom-right-radius: 0.8rem;
-        border: 1px solid var(--border-primary);
-
-        &:before {
-            content: " ";
-            position: absolute;
-            display: inline-block;
-            width: 3.5rem;
-            height: 29.9rem;
-            background-color: var(--editor-line-number-bg);
-            border-bottom-left-radius: 0.8rem;
-        }
-
-        ul {
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-
-            li {
-                display: flex;
-                align-items: center;
-                gap: 0.7rem;
-
-                &:first-child {
-                    margin-top: 0.5rem;
-                }
-
-                &:last-child {
-                    margin-bottom: 0.5rem;
-                }
-
-                div {
-                    width: calc(100% - 4.7rem);
-                    display: flex;
-                    gap: 0.5rem;
-
-                    input {
-                        outline: none;
-                        border: none;
-                        color: var(--text-primary);
-                        font-weight: 500;
-                        background-color: var(--editor-input-bg);
-                        padding: 0.4rem;
-                        border-radius: 0.5rem;
-                    }
-
-                    span {
-                        font-weight: 600;
-                        font-size: 2rem;
-                    }
-                }
-            }
-        }
-    }
-
-    .line-number {
-        position: relative;
-        display: inline-block;
-        text-align: center;
-        width: 3.5rem;
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
-
-    [data-input-type="key"] {
-        min-width: 4rem;
-        max-width: 27.7rem;
-        color: var(--editor-key-input-text) !important;
-    }
-
-    [data-input-type="value"] {
-        min-width: 6rem;
-        max-width: 27.7rem;
-        color: var(--editor-value-input-text) !important;
-    }
-</style>
