@@ -3,6 +3,12 @@
 EnvMint is a simple `.env` generator tool designed for fast and clean variable creation.
 It runs entirely in the browser with no backend dependency.
 
+## Themes
+
+|               Dark               |                Light               |
+| -------------------------------- | ---------------------------------- |
+| ![Dark theme](./assets/dark.png) | ![Light theme](./assets/light.png) |
+
 ## What’s behind the 'Copy Secret' button?
 
 EnvMint uses the browser's native cryptography API:
