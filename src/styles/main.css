@@ -5,6 +5,9 @@
 body {
     background-color: var(--surface-bg);
     color: var(--text-primary);
+}
+
+.container {
     max-width: var(--app-container);
     width: 100%;
     margin: 0 auto;

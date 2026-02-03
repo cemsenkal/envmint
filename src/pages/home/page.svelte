@@ -3,9 +3,13 @@
     import Editor from "../../components/editor/index.svelte";
     import Cards from "../../components/cards/index.svelte";
     import Usage from "../../components/usage/index.svelte";
+    import Footer from "../../components/footer/index.svelte";
 </script>
 
-<Header />
-<Editor />
-<Cards />
-<Usage />
+<main class="container">
+    <Header />
+    <Editor />
+    <Cards />
+    <Usage />
+</main>
+<Footer />
