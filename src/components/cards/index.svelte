@@ -37,19 +37,21 @@
         div {
             background-color: var(--surface-panel);
             border: 1px solid var(--border-primary);
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             width: 100%;
             border-radius: 0.8rem;
-            padding: 0.5rem;
+            overflow: hidden;
 
             h3 {
-                margin: 0;
-                padding: 0.5rem 0rem;
+                padding: 0.5rem 1rem;
+                border-bottom: 1px solid var(--border-primary);
+                background-color: var(--surface-bg);
             }
 
             p {
-                margin: 0;
                 opacity: 0.7;
+                padding: 1rem;
+                line-height: 1.4rem;
             }
         }
     }
